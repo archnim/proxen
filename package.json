@@ -1,5 +1,5 @@
 {
-  "name": "prox",
+  "name": "proxen",
   "version": "1.0.0",
   "description": "Dead simple cli http proxy",
   "bin": "main.js",
@@ -13,7 +13,7 @@
   "keywords": [
     "proxy",
     "cli",
-    "prox",
+    "proxen",
     "easy",
     "simple"
   ],
