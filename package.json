@@ -1,6 +1,6 @@
 {
   "name": "proxen",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Dead simple cli http proxy",
   "bin": "main.js",
   "scripts": {
