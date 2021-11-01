@@ -1,0 +1,29 @@
+{
+  "name": "prox",
+  "version": "1.0.0",
+  "description": "Dead simple cli http proxy",
+  "bin": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/archnim/prox.git"
+  },
+  "keywords": [
+    "proxy",
+    "cli",
+    "prox",
+    "easy",
+    "simple"
+  ],
+  "author": "archnim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/archnim/prox/issues"
+  },
+  "homepage": "https://github.com/archnim/prox#readme",
+  "dependencies": {
+    "http-proxy": "^1.18.1"
+  }
+}
