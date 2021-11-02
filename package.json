@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/archnim/prox.git"
+    "url": "git+https://github.com/archnim/proxen.git"
   },
   "keywords": [
     "proxy",
@@ -20,9 +20,9 @@
   "author": "archnim",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/archnim/prox/issues"
+    "url": "https://github.com/archnim/proxen/issues"
   },
-  "homepage": "https://github.com/archnim/prox#readme",
+  "homepage": "https://github.com/archnim/proxen#readme",
   "dependencies": {
     "http-proxy": "^1.18.1"
   }
