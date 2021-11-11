@@ -8,20 +8,27 @@ let fs = require("fs"),
     key = process.argv[5]
 ;
 
-if(cert)
-    httpProxy.createServer({
-        target: {
-            host: 'localhost',
-            port: input
-        },
-        ssl: {
-            key: fs.readFileSync(key, 'utf8'),
-            cert: fs.readFileSync(cert, 'utf8')
-        }
-    }).listen(output);
-else
-    httpProxy.createProxyServer({
-        target:`http://localhost:${input}`
-    }).listen(output);
+(function prox() {
+    try {
+        if(cert)
+            httpProxy.createServer({
+                target: {
+                    host: 'localhost',
+                    port: input
+                },
+                ssl: {
+                    key: fs.readFileSync(key, 'utf8'),
+                    cert: fs.readFileSync(cert, 'utf8')
+                }
+            }).listen(output);
+        else
+            httpProxy.createProxyServer({
+                target:`http://localhost:${input}`
+            }).listen(output);
+    }
+    catch(err) {
+        prox();
+    }
+})();
 
 console.log(`Proxying form port: ${process.argv[2]} to port: ${process.argv[3]}...`);
