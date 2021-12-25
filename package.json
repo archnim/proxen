@@ -22,8 +22,5 @@
   "bugs": {
     "url": "https://github.com/archnim/proxen/issues"
   },
-  "homepage": "https://github.com/archnim/proxen#readme",
-  "dependencies": {
-    "http-proxy": "^1.18.1"
-  }
+  "homepage": "https://github.com/archnim/proxen#readme"
 }
