@@ -4,8 +4,6 @@ let fs = require("fs"),
 	http = require("http"),
 	https = require("https"),
 
-	lg = console.log
-
 	op = process.argv[2],
 	opIsF = (op == "-f") || (op == "--file"),
 	fname = from = process.argv[3],
@@ -14,39 +12,101 @@ let fs = require("fs"),
 	key = process.argv[6]
 ;
 
-function serve (client_req, client_res) {
-	var options = {
-		hostname: "localhost",
-		port: input,
-		path: client_req.url,
-		method: client_req.method,
-		headers: client_req.headers
-	};
-	var req = http.request(options, function(res) {
-		client_res.writeHead(res.statusCode, res.headers);
-		res.on('data', function (chunk) {
-			client_res.write(chunk);
-		});
-		res.on('end', function () {
-			client_res.end();
-		});
-	});
-	req.end();
-}
-
 function rp_serve(req, res, rpObj) {
-	lg(rpObj);
+	let dest,
+		host = req.headers.host.split(":")[0];
+	;
+
+	if(opIsF) {
+		if(typeof rpObj == "number")
+			dest = parseInt(to);
+		else {
+			if(rpObj[host])
+				dest = rpObj[host];
+			else if(rpObj["#default"])
+				dest = rpObj["#default"];
+			else {
+				res.writeHead(404);
+				res.end();
+				return;
+			}
+		}
+	}
+	else dest = to;
+
+	let options = {
+			hostname: "127.0.0.1",
+			port: dest,
+			path: req.url,
+			method: req.method,
+			headers: req.headers
+		},
+		backReq = http.request(options, backRes => {
+			res.writeHead(
+				backRes.statusCode,
+				backRes.statusMessage,
+				backRes.headers
+			);
+			backRes.on("data", chunk => res.write(chunk));
+			backRes.on("end", chunk => res.end(chunk));
+		})
+	;
+	backReq.end();
 }
 
 function rprox(rpPort, rpObj) {
 	if(rpPort){
-		if(! /^\d+$/.test(rpPort)) {
-			console.error(`In reverse-proxy section, wrong input port: "${rpPort}" !`);
+		rpPort = parseInt(rpPort);
+		if(isNaN(rpPort)) {
+			console.error(
+				`In reverse-proxy section, wrong input port: "${rpPort}" ! ` +
+				"Number expected."
+			);
+			process.exit();
+		}
+		if(rpPort < 0) {
+			console.error(
+				`In reverse-proxy section, wrong input port: "${rpPort}" ! ` +
+				"Port number must be a positive number."
+			);
+			process.exit();
+		}
+		if(rpPort > 65535) {
+			console.error(
+				`In reverse-proxy section, wrong input port: "${rpPort}" ! ` +
+				"Port number must be smaller that 65536."
+			);
 			process.exit();
 		}
 		if(typeof rpObj != "object") {
 			console.error(`In reverse-proxy section, wrong value for port ${rpPort} !`);
 			process.exit();
+		}
+		for(let hst in rpObj) {
+			if(typeof rpObj[hst] != "number") {
+				console.error(
+					`In reverse-proxy section, for input port ${rpPort}, ` +
+					`wrong destnation port supplied for host "${hst}. "` +
+					"Number expected."
+				);
+				process.exit();
+			}
+			if(rpObj[hst] < 0) {
+				console.error(
+					`In reverse-proxy section, for input port ${rpPort}, ` +
+					`wrong destnation port supplied for host "${hst}. "` +
+					"Port number must be a positive number."
+				);
+				process.exit();
+			}
+			if(rpObj[hst] > 65535) {
+				console.error(
+					`In reverse-proxy section, for input port ${rpPort}, ` +
+					`wrong destnation port supplied for host "${hst}. "` +
+					"Port number must be smaller that 65536."
+				);
+				process.exit();
+			}
 		}
 	}
 	else rpObj = {}
@@ -60,7 +120,8 @@ function rprox(rpPort, rpObj) {
 
 		if(lkey) {
 			if(! lcert) {
-				console.error("No cert file supplied !")
+				console.error(`No cert file supplied when reverse-proxying from port ${rpPort || from} !`);
+				process.exit();
 			}
 			let kf, cf;
 
@@ -98,11 +159,13 @@ function rprox(rpPort, rpObj) {
 		rev_prox.on("error", err => {
 			console.error(`An error occurred when reverse-proxying from port ${rpPort || from}:`);
 			console.error(err.message);
+			process.exit();
 		});
 	}
 	catch(err) {
 		console.error(`An error occurred when reverse-proxying from port ${rpPort || from}:`);
 		console.error(err.message);
+		process.exit();
 	}
 }
 
@@ -135,7 +198,7 @@ else if(opIsF){
 
 	if(fdata.rprox && (typeof fdata.rprox != "object")) {
 		console.error("Wrong value supplied for the reverse-proxy section. Expected an object.");
-
+		process.exit();
 	}
 
 	for (let rp in fdata.rprox) {
@@ -145,13 +208,45 @@ else if(opIsF){
 else if(op == "rprox") {
 	if(!from)
 		console.error("No input port specified !");
-	else if(! /^\d+$/.test(from))
-		console.error("Wrong input port !");
-	if(!to)
+	else if(isNaN(parseInt(from)))
+		console.error(`Wrong input port: "${from}". Number Expected.`);
+	else if(!to)
 		console.error("No output port specified !");
-	else if(! /^\d+$/.test(to))
-		console.error("Wrong output port !");
+	else if(isNaN(parseInt(to)))
+		console.error(`Wrong output port: "${from}". Number Expected.`);
 	else {
+		from = parseInt(from);
+		if(from < 0) {
+			console.error(
+				`Wrong input port: "${from}". ` +
+				"Port number must be a positive number."
+			);
+			process.exit();
+		}
+		if(from > 65535) {
+			console.error(
+				`Wrong input port: "${from}". ` +
+				"Port number must be smaller than 65536."
+			);
+			process.exit();
+		}
+
+		to = parseInt(to);
+		if(to < 0) {
+			console.error(
+				`Wrong output port: "${from}". ` +
+				"Port number must be a positive number."
+			);
+			process.exit();
+		}
+		if(to > 65535) {
+			console.error(
+				`Wrong output port: "${from}". ` +
+				"Port number must be smaller than 65536."
+			);
+			process.exit();
+		}
+
 		rprox();
 		console.log(`Reverse-proxying form port: ${from} to port: ${to}...`);
 	}
@@ -159,4 +254,3 @@ else if(op == "rprox") {
 else {
 	console.error("Wrong parameter set !");
 }
-
