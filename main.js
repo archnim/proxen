@@ -34,24 +34,38 @@ function rp_serve(req, res, rpObj) {
 	}
 	else dest = to;
 
-	let options = {
-			hostname: "127.0.0.1",
-			port: dest,
-			path: req.url,
-			method: req.method,
-			headers: req.headers
-		},
-		backReq = http.request(options, backRes => {
-			res.writeHead(
-				backRes.statusCode,
-				backRes.statusMessage,
-				backRes.headers
-			);
-			backRes.on("data", chunk => res.write(chunk));
-			backRes.on("end", chunk => res.end(chunk));
-		})
-	;
-	backReq.end();
+	try {
+		let options = {
+				hostname: "127.0.0.1",
+				port: dest,
+				path: req.url,
+				method: req.method,
+				headers: req.headers
+			},
+			backReq = http.request(options, backRes => {
+				res.writeHead(
+					backRes.statusCode,
+					backRes.statusMessage,
+					backRes.headers
+				);
+				backRes.on("data", chunk => res.write(chunk));
+				backRes.on("end", chunk => res.end(chunk));
+			})
+		;
+		backReq.on("error", err => {
+			console.error("An error occurred when serving :");
+			console.error(options);
+			console.error("Error message: ");
+			console.error(err.message);
+		});
+		backReq.end();
+	}
+	catch(err) {
+		console.error("An error occurred when serving :");
+		console.error(options);
+		console.error("Error message: ");
+		console.error(err.message);
+	}
 }
 
 function rprox(rpPort, rpObj) {
