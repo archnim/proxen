@@ -1,5 +1,5 @@
 # proxen
-## A dead simple, yet powerful http Toolset
+## A dead simple, yet powerful HTTP toolset
 ### Features: `proxy`, `reverse proxy`, `redirection`, `remote download`, `static file server`, `in-browser file explorer`
 
 ## To install proxen:
@@ -76,7 +76,7 @@ Add the field "rprox" to the root object of the file.
 {
 	"rprox": {
 		"<input port 1>": {
-			"<address 1>": "<output port 1>",  // For each ip address or domain name used to access the
+			"<address 1>": "<output port 1>",  // For each IP address or domain name used to access the
 			"<address 2>": "<output port 2>",  // input port, we can specify a different output port
 			"<address 3>": "<output port 3>"
 			"default": "<default output port>" // We can also add a default output port (optional)
@@ -135,7 +135,7 @@ Add the field "rprox" to the root object of the file.
 }
 ```
 
-- Exeample 5 (Mix previous cases together)
+- Example 5 (Mix previous cases together)
 ```json
 {
 	"rprox": {
@@ -207,7 +207,7 @@ Expect release date: *December 31 2022*
 
 
 ## You can encourage me:
-- Follow [my gihub account](https://github.com/archnim)
+- Follow [my GitHub account](https://github.com/archnim)
 - Star [proxen's repository](https://github.com/archnim/proxen), and send pull requests
 - Suggest features and point out bugs, through [issues](https://github.com/archnim/proxen/issues)
 
@@ -215,3 +215,6 @@ Expect release date: *December 31 2022*
 ## Get in touch
 - [My Twitter account](https://twitter.com/archnim)
 - [My Telegram account](https://t.me/archnim)
+
+
+By @archnim. Full-stack web developer. Open-source enthusiast. [Nim-lang](https://nimlang.org) promoter.
