@@ -473,7 +473,7 @@ else if(op == "rprox") {
   }
 }
 else if(op == '-h' || op == "--help" || op == "help") {
-  console.log("Proxen Version 3.0.0");
+  console.log("Proxen Version 3.0.2");
   console.log("Copyright (c) 2021-2022 archnim");
   console.log("");
   console.log("https://github.com/archnim/proxen");
@@ -506,6 +506,11 @@ else if(op == '-h' || op == "--help" || op == "help") {
   console.log("");
   console.log("To know how to write a config file for proxen, read this documentation:");
   console.log("https://www.npmjs.com/package/proxen#readme");
+}
+else if(op == '-v' || op == "--version" || op == "version") {
+  console.log("Proxen Version 3.0.2");
+  console.log("Copyright (c) 2021-2022 archnim");
+  console.log("");
 }
 else {
   console.error("Wrong parameter set !");
