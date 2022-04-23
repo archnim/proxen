@@ -54,17 +54,15 @@ Add the field "rprox" to the root object of the file.
   "rprox": {
     "<input port 1>": {
       "key": "<path to key 1>",
-      "cert": "<path to cert 1>"
+      "cert": "<path to cert 1>",
       "output": "<output port 1>"
     },
-    "<input port 2>": {
-      "key": "<path to key 2>",
-      "cert": "<path to cert 2>"
+    "<input port 2>": { // will not use ssl or tls (no key and cert). Equivalent to example 1
       "output": "<output port 2>"
     },
     "<input port 3>": {
       "key": "<path to key 3>",
-      "cert": "<path to cert 3>"
+      "cert": "<path to cert 3>",
       "output": "<output port 3>"
     }
   }
@@ -78,19 +76,19 @@ Add the field "rprox" to the root object of the file.
     "<input port 1>": {
       "<address 1>": "<output port 1>",  // For each IP address or domain name used to access the
       "<address 2>": "<output port 2>",  // input port, we can specify a different output port
-      "<address 3>": "<output port 3>"
+      "<address 3>": "<output port 3>",
       "default": "<default output port>" // We can also add a default output port (optional)
     },
     "<input port 2>": {
       "<address 1>": "<output port 1>",
       "<address 2>": "<output port 2>",
-      "<address 3>": "<output port 3>"
+      "<address 3>": "<output port 3>",
       "default": "<default output port>"
     },
     "<input port 3>": {
       "<address 1>": "<output port 1>",
       "<address 2>": "<output port 2>",
-      "<address 3>": "<output port 3>"
+      "<address 3>": "<output port 3>",
       "default": "<default output port>"
     }
   }
@@ -107,17 +105,15 @@ Add the field "rprox" to the root object of the file.
       "hosts": {
         "<address 1>": "<output port 1>",
         "<address 2>": "<output port 2>",
-        "<address 3>": "<output port 3>"
+        "<address 3>": "<output port 3>",
         "default": "<default output port>"
       }
     },
     "<input port 2>": {
-      "key": "<path to key 2>",
-      "cert": "<path to cert 2>",
-      "hosts": {
+      "hosts": { // Will not use ssl or tls (no key and cert). Equivalent of example 3
         "<address 1>": "<output port 1>",
         "<address 2>": "<output port 2>",
-        "<address 3>": "<output port 3>"
+        "<address 3>": "<output port 3>",
         "default": "<default output port>"
       }
     },
@@ -127,7 +123,7 @@ Add the field "rprox" to the root object of the file.
       "hosts": {
         "<address 1>": "<output port 1>",
         "<address 2>": "<output port 2>",
-        "<address 3>": "<output port 3>"
+        "<address 3>": "<output port 3>",
         "default": "<default output port>"
       }
     }
@@ -135,29 +131,40 @@ Add the field "rprox" to the root object of the file.
 }
 ```
 
-- Example 5 (Mix previous cases together)
+- Example 5 (All previous cases together)
 ```json
 {
   "rprox": {
     "<input port 1>": "<output port>",
     "<input port 2>": {
       "key": "<path to key>",
-      "cert": "<path to cert>"
+      "cert": "<path to cert>",
       "output": "<output port>"
     },
     "<input port 3>": {
-      "<address 1>": "<output port 1>",
-      "<address 2>": "<output port 2>",
-      "<address 3>": "<output port 3>"
-      "default": "<default output port>"
+      "output": "<output port>"
     },
     "<input port 4>": {
+      "<address 1>": "<output port 1>",
+      "<address 2>": "<output port 2>",
+      "<address 3>": "<output port 3>",
+      "default": "<default output port>"
+    },
+    "<input port 5>": {
       "key": "<path to key>",
       "cert": "<path to cert>",
       "hosts": {
         "<address 1>": "<output port 1>",
         "<address 2>": "<output port 2>",
-        "<address 3>": "<output port 3>"
+        "<address 3>": "<output port 3>",
+        "default": "<default output port>"
+      }
+    },
+    "<input port 6>": {
+      "hosts": {
+        "<address 1>": "<output port 1>",
+        "<address 2>": "<output port 2>",
+        "<address 3>": "<output port 3>",
         "default": "<default output port>"
       }
     }

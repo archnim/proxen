@@ -12,27 +12,20 @@ let fs = require("fs"),
   key = process.argv[6]
 ;
 
-function rp_serve(req, res, rpObj) {
-  let dest,
-    host = req.headers.host.split(":")[0];
-  ;
+function rp_serve(req, res, dest) {
+  let host = req.headers.host.split(":")[0];
 
-  if(opIsF) {
-    if(typeof rpObj == "number")
-      dest = parseInt(to);
+  if(typeof dest == "object") {
+    if(dest[host])
+      dest = dest[host];
+    else if(dest["#default"])
+      dest = dest["#default"];
     else {
-      if(rpObj[host])
-        dest = rpObj[host];
-      else if(rpObj["#default"])
-        dest = rpObj["#default"];
-      else {
-        res.writeHead(404);
-        res.end();
-        return;
-      }
+      res.writeHead(404);
+      res.end();
+      return;
     }
   }
-  else dest = to;
 
   try {
     let options = {
@@ -57,6 +50,9 @@ function rp_serve(req, res, rpObj) {
       console.error(options);
       console.error("Error message: ");
       console.error(err.message);
+
+      res.writeHead(500);
+      res.end();
     });
     backReq.end();
   }
@@ -65,6 +61,64 @@ function rp_serve(req, res, rpObj) {
     console.error(options);
     console.error("Error message: ");
     console.error(err.message);
+
+    res.writeHead(500);
+    res.end();
+  }
+}
+
+function http_prox(source, dest) {
+  rev_prox = http.createServer((req, res) => rp_serve(req, res, dest.output || dest.hosts || dest));
+  rev_prox.listen(source);
+}
+
+function https_prox(source, dest, lkey, lcert) {
+  try {
+    let rev_prox;
+
+    if(! lcert) {
+      console.error(`No cert file supplied when reverse-proxying source port ${source} !`);
+      process.exit();
+    }
+    let kf, cf;
+
+    try {
+      kf = fs.readFileSync(lkey, "utf-8");
+    }
+    catch(err) {
+      console.error(`Failed to read key file when reverse-proxying source port ${source}:`);
+      console.error(err);
+      process.exit();
+    }
+
+    try {
+      cf = fs.readFileSync(lcert, "utf-8");
+    }
+    catch(err) {
+      console.error(`Failed to read cert file when reverse-proxying source port ${source}:`);
+      console.error(err);
+      process.exit();
+    }
+
+    rev_prox = https.createServer(
+      {
+        key: kf,
+        cert: cf
+      },
+      (req, res) => rp_serve(req, res, dest)
+    );
+    rev_prox.listen(source);
+
+    rev_prox.on("error", err => {
+      console.error(`An error occurred when reverse-proxying source port ${source}:`);
+      console.error(err.message);
+      process.exit();
+    });
+  }
+  catch(err) {
+    console.error(`An error occurred when reverse-proxying source port ${source}:`);
+    console.error(err.message);
+    process.exit();
   }
 }
 
@@ -92,94 +146,222 @@ function rprox(rpPort, rpObj) {
       );
       process.exit();
     }
-    if(typeof rpObj != "object") {
-      console.error(`In reverse-proxy section, wrong value for port ${rpPort} !`);
-      process.exit();
-    }
-    for(let hst in rpObj) {
-      if(typeof rpObj[hst] != "number") {
+
+    // When rprox value is a string
+    if(typeof rpObj == String) {
+      rpObj = parseInt(rpObj);
+      if(isNaN(rpObj)) {
         console.error(
-          `In reverse-proxy section, for input port ${rpPort}, ` +
-          `wrong destnation port supplied for host "${hst}. "` +
+          `In reverse-proxy section, wrong output port: "${rpObj}" ! ` +
           "Number expected."
         );
         process.exit();
       }
-      if(rpObj[hst] < 0) {
+    }
+
+    // When rprox value is a port number
+    if(typeof rpObj == Number) {
+      if(rpObj < 0) {
         console.error(
-          `In reverse-proxy section, for input port ${rpPort}, ` +
-          `wrong destnation port supplied for host "${hst}. "` +
+          `In reverse-proxy section, wrong output port: "${rpObj}" ! ` +
           "Port number must be a positive number."
         );
         process.exit();
       }
-      if(rpObj[hst] > 65535) {
+      if(rpObj > 65535) {
         console.error(
-          `In reverse-proxy section, for input port ${rpPort}, ` +
-          `wrong destnation port supplied for host "${hst}. "` +
+          `In reverse-proxy section, wrong output port: "${rpObj}" ! ` +
           "Port number must be smaller that 65536."
         );
         process.exit();
       }
+      http_prox(rpPort, rpObj);
     }
-  }
-  else rpObj = {}
 
-  let lkey = rpObj.key || ((op == "rprox")? key : undefined),
-    lcert = rpObj.cert || ((op == "rprox")? cert : undefined)
-  ;
+    // When rprox value is an object
+    else if(typeof rpObj == "object") {
+      // When rprox value has an 'output' field (Unique destination)
+      if(rpObj.output) {
+        if(typeof rpObj.output == "string") {
+          rpObj.output = parseInt(rpObj.output);
+          if(isNaN(rpObj.output)) {
+            console.error(
+              `In reverse-proxy section, wrong output port: "${rpObj.output}" ! ` +
+              "Number expected."
+            );
+            process.exit();
+          }
+        }
 
-  try {
-    let rev_prox;
+        if(typeof rpObj.output == "number") {
+          if(rpObj.output < 0) {
+            console.error(
+              `In reverse-proxy section, wrong output port: "${rpObj.output}" ! ` +
+              "Port number must be a positive number."
+            );
+            process.exit();
+          }
+          if(rpObj.output > 65535) {
+            console.error(
+              `In reverse-proxy section, wrong output port: "${rpObj.output}" ! ` +
+              "Port number must be smaller that 65536."
+            );
+            process.exit();
+          }
+        }
 
-    if(lkey) {
-      if(! lcert) {
-        console.error(`No cert file supplied when reverse-proxying from port ${rpPort || from} !`);
-        process.exit();
+        else {
+          console.error(
+            `In reverse-proxy section, wrong output port: "${rpObj.output}" ! ` +
+            "Number expected."
+          );
+          process.exit();
+        }
+
+        if(rpObj.key)
+          https_prox(rpPort, rpObj.output, rpObj.key, rpObj.cert);
+        else
+          http_prox(rpPort, rpObj.output);
       }
-      let kf, cf;
 
-      try {
-        kf = fs.readFileSync(lkey, "utf-8");
-      }
-      catch(err) {
-        console.error(`Failed to read key file when reverse-proxying from port ${rpPort || from}:`);
-        console.error(err);
-        process.exit();
+      // When rprox value has a 'hosts' fields (multiple destinations)
+      if(rpObj.hosts) {
+        if(typeof rpObj.hosts != "object") {
+          console.error(
+            `In reverse-proxy section, wrong host list ! ` +
+            "Object expected."
+          );
+          process.exit();
+        }
+
+        for(hst in rpObj.hosts) {
+          if(typeof rpObj.hosts[hst] == "string") {
+            rpObj.hosts[hst] = parseInt(rpObj.hosts[hst]);
+            if(isNaN(rpObj.hosts[hst])) {
+              console.error(
+                `In reverse-proxy section, for input port ${rpPort}, ` +
+                `wrong destination port supplied for host "${hst}. "` +
+                "Number expected."
+              );
+              process.exit();
+            }
+          }
+
+          if(typeof rpObj.hosts[hst] == "number") {
+            rpObj.hosts[hst] = floor(rpObj.hosts[hst]);
+            if(rpObj.hosts[hst] < 0) {
+              console.error(
+                `In reverse-proxy section, for input port ${rpPort}, ` +
+                `wrong destination port supplied for host "${hst}. "` +
+                "Port number must be a positive number."
+              );
+              process.exit();
+            }
+            if(rpObj.hosts[hst] > 65535) {
+              console.error(
+                `In reverse-proxy section, for input port ${rpPort}, ` +
+                `wrong destination port supplied for host "${hst}. "` +
+                "Port number must be smaller that 65536."
+              );
+              process.exit();
+            }
+          }
+
+          else {
+            console.error(
+              `In reverse-proxy section, for input port ${rpPort}, ` +
+              `wrong destination port supplied for host "${hst}. "` +
+              "Number expected."
+            );
+            process.exit();
+          }
+        }
+
+        http_prox(rpPort, rpObj);
       }
 
-      try {
-        cf = fs.readFileSync(lcert, "utf-8");
-      }
-      catch(err) {
-        console.error(`Failed to read cert file when reverse-proxying from port ${rpPort || from}:`);
-        console.error(err);
-        process.exit();
-      }
+      else {
+        for(let hst in rpObj) {
+          if(typeof rpObj[hst] == "string") {
+            rpObj[hst] = parseInt(rpObj[hst]);
+            if(isNaN(rpObj[hst])) {
+              console.error(
+                `In reverse-proxy section, for input port ${rpPort}, ` +
+                `wrong destination port supplied for host "${hst}. "` +
+                "Number expected."
+              );
+              process.exit();
+            }
+          }
 
-      rev_prox = https.createServer(
-        {
-          key: kf,
-          cert: cf
-        },
-        (req, res) => rp_serve(req, res, rpObj)
-      );
+          if(typeof rpObj[hst] == "number") {
+            rpObj[hst] = floor(rpObj[hst]);
+            if(rpObj[hst] < 0) {
+              console.error(
+                `In reverse-proxy section, for input port ${rpPort}, ` +
+                `wrong destination port supplied for host "${hst}. "` +
+                "Port number must be a positive number."
+              );
+              process.exit();
+            }
+            if(rpObj[hist] > 65535) {
+              console.error(
+                `In reverse-proxy section, for input port ${rpPort}, ` +
+                `wrong destination port supplied for host "${hst}. "` +
+                "Port number must be smaller that 65536."
+              );
+              process.exit();
+            }
+          }
+
+          else {
+            console.error(
+              `In reverse-proxy section, for input port ${rpPort}, ` +
+              `wrong destination port supplied for host "${hst}. "` +
+              "Number expected."
+            );
+            process.exit();
+          }
+          if(typeof rpObj[hst] != "number") {
+            console.error(
+              `In reverse-proxy section, for input port ${rpPort}, ` +
+              `wrong destination port supplied for host "${hst}. "` +
+              "Number expected."
+            );
+            process.exit();
+          }
+          if(rpObj[hst] < 0) {
+            console.error(
+              `In reverse-proxy section, for input port ${rpPort}, ` +
+              `wrong destination port supplied for host "${hst}. "` +
+              "Port number must be a positive number."
+            );
+            process.exit();
+          }
+          if(rpObj[hst] > 65535) {
+            console.error(
+              `In reverse-proxy section, for input port ${rpPort}, ` +
+              `wrong destination port supplied for host "${hst}. "` +
+              "Port number must be smaller that 65536."
+            );
+            process.exit();
+          }
+        }
+      }
     }
+
+    // When rprox value is unsupported
     else {
-      rev_prox = http.createServer((req, res) => rp_serve(req, res, rpObj));
-    }
-    rev_prox.listen(rpPort || from);
-
-    rev_prox.on("error", err => {
-      console.error(`An error occurred when reverse-proxying from port ${rpPort || from}:`);
-      console.error(err.message);
+      console.error(`In reverse-proxy section, wrong value for port ${rpPort} !`);
+      console.error("Visit https://www.npmjs.com/package/proxen for documentation.");
       process.exit();
-    });
+    }
   }
-  catch(err) {
-    console.error(`An error occurred when reverse-proxying from port ${rpPort || from}:`);
-    console.error(err.message);
-    process.exit();
+  else {
+    if(key)
+      https_prox(from, to, key, cert);
+    else
+      http_prox(from, to);
   }
 }
 
