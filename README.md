@@ -13,7 +13,7 @@ I will do all my best to never break it again.
 
 ## Usage
 There are two ways to use proxen:
-- The simple way is to type `proxen <subcommand> <options>`. Each subcommand corresponds to one feature of the program.
+- The simple way is to type `proxen <subcommand> <params>`. Each subcommand corresponds to one feature of the program.
 
 - The other way is to use a config file. You can name that file however you want. It is a Json file. Here is how to use it: `proxen -f <filename>` or `proxen --file <filename>`
 
@@ -148,7 +148,7 @@ Add the field "rprox" to the root object of the file.
       "<address 1>": "<output port 1>",
       "<address 2>": "<output port 2>",
       "<address 3>": "<output port 3>",
-      "default": "<default output port>"
+      "#default": "<default output port>"
     },
     "<input port 5>": {
       "key": "<path to key>",
@@ -157,7 +157,7 @@ Add the field "rprox" to the root object of the file.
         "<address 1>": "<output port 1>",
         "<address 2>": "<output port 2>",
         "<address 3>": "<output port 3>",
-        "default": "<default output port>"
+        "#default": "<default output port>"
       }
     },
     "<input port 6>": {
@@ -165,7 +165,7 @@ Add the field "rprox" to the root object of the file.
         "<address 1>": "<output port 1>",
         "<address 2>": "<output port 2>",
         "<address 3>": "<output port 3>",
-        "default": "<default output port>"
+        "#default": "<default output port>"
       }
     }
   }
@@ -178,7 +178,7 @@ This feature will allow you to explicitly redirect clients to another port or se
 
 *Not yet implemented.*
 Will be available in version 3.1.0
-Expect release date: *May 25 2022*
+Expect release date: *May 30 2022*
 
 
 ### proxen as a proxy
