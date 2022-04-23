@@ -24,7 +24,7 @@ The advantage of using the config file, is that you can exploit all the availabl
 
 
 ### proxen as a reverse proxy
-This feature allows you to forward all requests from an input port, to an output port. So no more need for NGNX in simple cases ! The input must be free, so that proxen will listen on it. You can also ask proxen to secure its server, by passing paths to a key and a cert file.
+This feature allows you to forward all requests from an input port, to an output port. So no more need for NGNX in simple cases ! The input port must be free, so that proxen can listen on it. You can also ask proxen to secure its server, by passing paths to a key and a cert file.
 
 #### Simple method:
 - HTTP without ssl or tls
@@ -227,4 +227,4 @@ Expect release date: *December 31 2022*
 - [My Telegram account](https://t.me/archnim)
 
 
-By @archnim. Full-stack web developer. Open-source enthusiast. [Nim-lang](https://nimlang.org) promoter.
+By @archnim. Full-stack web developer. Open-source enthusiast. [Nim-lang](https://nim-lang.org) promoter.
