@@ -1,6 +1,6 @@
 {
   "name": "proxen",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "A dead simple, yet powerful HTTP toolset",
   "bin": "main.js",
   "scripts": {
