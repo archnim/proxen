@@ -509,7 +509,7 @@ else if(op == '-h' || op == "--help" || op == "help") {
 }
 else if(op == '-v' || op == "--version" || op == "version") {
   console.log("Proxen Version 3.0.2");
-  console.log("Copyright (c) 2021-2022 archnim");
+  console.log("Copyright (c) 2021-2022 archnim (https://github.com/archnim)");
   console.log("");
 }
 else {
