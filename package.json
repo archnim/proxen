@@ -11,7 +11,10 @@
     "url": "git+https://github.com/archnim/proxen.git"
   },
   "keywords": [
+    "reverse",
     "proxy",
+    "http",
+    "tools",
     "cli",
     "proxen",
     "easy",

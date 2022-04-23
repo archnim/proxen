@@ -1,5 +1,8 @@
 # proxen
 ## A dead simple, yet powerful HTTP toolset
+
+Multifunction cli tool with **zero dependency**
+
 ### Features: `proxy`, `reverse proxy`, `redirection`, `remote download`, `static file server`, `in-browser file explorer`
 
 ## To install proxen:
