@@ -473,7 +473,7 @@ else if(op == "rprox") {
   }
 }
 else if(op == '-h' || op == "--help" || op == "help") {
-  console.log("Proxen Version 3.0.2");
+  console.log("Proxen Version 3.0.5");
   console.log("Copyright (c) 2021-2022 archnim");
   console.log("");
   console.log("https://github.com/archnim/proxen");
@@ -508,7 +508,7 @@ else if(op == '-h' || op == "--help" || op == "help") {
   console.log("https://www.npmjs.com/package/proxen#readme");
 }
 else if(op == '-v' || op == "--version" || op == "version") {
-  console.log("Proxen Version 3.0.2");
+  console.log("Proxen Version 3.0.5");
   console.log("Copyright (c) 2021-2022 archnim (https://github.com/archnim)");
   console.log("");
 }
