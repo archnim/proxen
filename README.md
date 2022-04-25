@@ -181,7 +181,7 @@ This feature will allow you to explicitly redirect clients to another port or se
 
 *Not yet implemented.*
 Will be available in version 3.1.0
-Expect release date: *May 30 2022*
+Expect release date: *April 25 2022*
 
 
 ### proxen as a proxy
@@ -189,7 +189,7 @@ This feature will allow you to access any resource on the web, using your server
 
 *Not yet implemented.*
 Will be available in version 3.2.0
-Expect release date: *June 15 2022*
+Expect release date: *May 30 2022*
 
 
 ### proxen as a download server
