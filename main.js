@@ -429,14 +429,14 @@ else if(opIsF){
 else if(op == "rprox") {
   if(!from)
     console.error("No input port specified !");
-  else if(isNaN(parseInt(from)))
-    console.error(`Wrong input port: "${from}". Number Expected.`);
   else if(!to)
     console.error("No output port specified !");
-  else if(isNaN(parseInt(to)))
-    console.error(`Wrong output port: "${from}". Number Expected.`);
   else {
     from = parseInt(from);
+    if(isNaN(from)) {
+      console.error(`Wrong input port: "${from}". Number Expected.`);
+      process.exit();
+    }
     if(from < 0) {
       console.error(
         `Wrong input port: "${from}". ` +
@@ -453,28 +453,32 @@ else if(op == "rprox") {
     }
 
     to = parseInt(to);
+    if(isNaN(to)) {
+      console.error(`Wrong output port: "${to}". Number Expected.`);
+      process.exit();
+    }
     if(to < 0) {
       console.error(
-        `Wrong output port: "${from}". ` +
+        `Wrong output port: "${to}". ` +
         "Port number must be a positive number."
       );
       process.exit();
     }
     if(to > 65535) {
       console.error(
-        `Wrong output port: "${from}". ` +
+        `Wrong output port: "${to}". ` +
         "Port number must be smaller than 65536."
       );
       process.exit();
     }
 
     rprox();
-    console.log(`Reverse-proxying from port: ${from} to port: ${to}...`);
   }
 }
 else if(op == '-h' || op == "--help" || op == "help") {
   console.log("Proxen Version 3.0.5");
   console.log("Copyright (c) 2021-2022 archnim");
+  console.log("Under MIT license");
   console.log("");
   console.log("https://github.com/archnim/proxen");
   console.log("https://npmjs.com/package/proxen");
@@ -510,7 +514,7 @@ else if(op == '-h' || op == "--help" || op == "help") {
 else if(op == '-v' || op == "--version" || op == "version") {
   console.log("Proxen Version 3.0.5");
   console.log("Copyright (c) 2021-2022 archnim (https://github.com/archnim)");
-  console.log("");
+  console.log("Under MIT license");
 }
 else {
   console.error("Wrong parameter set !");
