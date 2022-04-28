@@ -1,3 +1,5 @@
+const { Http2ServerRequest } = require("http2");
+
 let fs = require("fs"),
   http = require("http"),
   https = require("https"),
@@ -55,7 +57,8 @@ function rp_serve(req, res, dest) {
       res.writeHead(500);
       res.end();
     });
-    backReq.end();
+    req.on("data", chunk => backReq.write(chunk));
+    req.on("end", () => backReq.end());
   }
   catch(err) {
     console.error("An error occurred when serving :");
@@ -78,7 +81,7 @@ function http_prox(source, dest) {
     else if(dest.hosts)
       dest = dest.hosts;
     if(typeof dest == "object") {
-      console.log(`Reverse-proxying from ports: ${source} to ports:`);
+      console.log(`Reverse-proxying from port: ${source} to ports:`);
       console.log(dest);
       console.log("...");
     }
@@ -181,7 +184,7 @@ function rprox(rpPort, rpObj) {
     if(rpPort > 65535) {
       console.error(
         `In reverse-proxy section, wrong input port: "${rpPort}" ! ` +
-        "Port number must be smaller that 65536."
+        "Port number must be smaller than 65536."
       );
       process.exit();
     }
@@ -211,7 +214,7 @@ function rprox(rpPort, rpObj) {
       if(rpObj > 65535) {
         console.error(
           `In reverse-proxy section, wrong output port: "${rpObj}" ! ` +
-          "Port number must be smaller that 65536."
+          "Port number must be smaller than 65536."
         );
         process.exit();
       }
@@ -245,7 +248,7 @@ function rprox(rpPort, rpObj) {
           if(rpObj.output > 65535) {
             console.error(
               `In reverse-proxy section, wrong output port: "${rpObj.output}" ! ` +
-              "Port number must be smaller that 65536."
+              "Port number must be smaller than 65536."
             );
             process.exit();
           }
@@ -302,7 +305,7 @@ function rprox(rpPort, rpObj) {
               console.error(
                 `In reverse-proxy section, for input port ${rpPort}, ` +
                 `wrong destination port supplied for host "${hst}. "` +
-                "Port number must be smaller that 65536."
+                "Port number must be smaller than 65536."
               );
               process.exit();
             }
@@ -352,7 +355,7 @@ function rprox(rpPort, rpObj) {
               console.error(
                 `In reverse-proxy section, for input port ${rpPort}, ` +
                 `wrong destination port supplied for host "${hst}. "` +
-                "Port number must be smaller that 65536."
+                "Port number must be smaller than 65536."
               );
               process.exit();
             }

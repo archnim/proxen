@@ -3,7 +3,7 @@
 let fs = require("fs"),
 
   { rprox } = require("./rprox"),
-  { red } = require("./red"),
+  red = require("./red"),
 
   op = process.argv[2],
   opIsF = (op == "-f") || (op == "--file"),
@@ -42,10 +42,15 @@ else if(opIsF){
     console.error("Wrong value supplied for the reverse-proxy section. Expected an object.");
     process.exit();
   }
-
-  for (let rp in fdata.rprox) {
+  for (let rp in fdata.rprox)
     rprox(rp, fdata.rprox[rp]);
+
+  if(fdata.red && (typeof fdata.red != "object")) {
+    console.error("Wrong value supplied for the redirection section. Expected an object.");
+    process.exit();
   }
+  for (let rd in fdata.red)
+    red(rd, fdata.red[rd]);
 }
 else if(op == "rprox") {
   if(!from)
@@ -97,7 +102,12 @@ else if(op == "rprox") {
   }
 }
 else if(op == "red") {
-  //
+  if(!from)
+    console.error("No input specified !");
+  else if(!to)
+    console.error("No destination specified !");
+  else
+    red(from, to);
 }
 else if(op == "-h" || op == "--help" || op == "help") {
   console.log("Proxen Version 3.0.8");
