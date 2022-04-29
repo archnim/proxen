@@ -178,7 +178,6 @@ This feature allows you to explicitly redirect clients from a source port to ano
 In the examples below, the destination (dest) can be:
 
 - A port number:
-
 In this case, the redirection preserves:
   - the protocol
   - the domain
@@ -188,7 +187,6 @@ In this case, the redirection preserves:
 Only the the port changes
 
 - The string "http" (lowercase):
-
 In this case, the redirection preserves:
   - the domain
   - the path
@@ -197,11 +195,9 @@ In this case, the redirection preserves:
 The protocol is set to "HTTP", and the port is set to 80.
 
 - The string "https" (lowercase):
-
 Works like the previous case. But the protocol is set to "HTTPS", and the port to 443.
 
 - A custom url:
-
 This allows you to redirect requests wherever you want. If you want to use some parts of the original request in the destination url, you can use the following variables in your url string:
   - {protocol} -> Will be replaced by the original request's protocol
   - {domain} -> Will be replaced by the original  domain
