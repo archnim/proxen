@@ -19,10 +19,10 @@ There are two ways to use proxen:
 The advantage of using the config file, is that you can exploit all the available features, in one call. And you can call each feature several time in the file.
 
 
-### proxen as a reverse proxy
+## proxen as a reverse proxy
 This feature allows you to forward all requests from an input port, to an output port. So no more need for NGNX in simple cases ! The input port must be free, so that proxen can listen on it. You can also ask proxen to secure its server, by passing paths to a key and a cert file.
 
-#### Simple method:
+### Simple method:
 - HTTP without ssl or tls
 ```sh
 proxen rprox <input port> <output port>
@@ -33,7 +33,7 @@ proxen rprox <input port> <output port>
 proxen rprox <input port> <output port> <cert file path> <key file path>
 ```
 
-#### With config file:
+### With config file:
 Add the field "rprox" to the root object of the file.
 
 - Example 1:
@@ -172,41 +172,49 @@ Add the field "rprox" to the root object of the file.
 ```
 
 
-### proxen as a redirection server
+## proxen as a redirection server
 This feature allows you to explicitly redirect clients from a source port to another port or url. The redirection is performed through a "301" HTTP response code. The source port must be free, so that proxen can listen on it. You can also provide paths to a cert and a key file, to make the connection secure.
 
 In the examples below, the destination (dest) can be:
+
 - A port number:
-In this case redirection preserves:
+
+In this case, the redirection preserves:
   - the protocol
   - the domain
   - the path
   - the querystring
+
 Only the the port changes
 
 - The string "http" (lowercase):
+
 In this case, the redirection preserves:
- - the domain
- - the path
- - the querystring
+  - the domain
+  - the path
+  - the querystring
+
 The protocol is set to "HTTP", and the port is set to 80.
 
-- The string "https (lowercase):
+- The string "https" (lowercase):
+
 Works like the previous case. But the protocol is set to "HTTPS", and the port to 443.
 
 - A custom url:
-This allows you to redirect requests wherever you want. If you want to use some parts of the original request in the destinations url, you can use the following variables in your url string:
+
+This allows you to redirect requests wherever you want. If you want to use some parts of the original request in the destination url, you can use the following variables in your url string:
   - {protocol} -> Will be replaced by the original request's protocol
   - {domain} -> Will be replaced by the original  domain
   - {port} -> The original port
   - {path} -> Original path
   - {query} -> Original querystring
+
 Example:
 ```sh
 proxen red 1555 https://blabla.com:{port}/custom/path{query} # Only preserves port and querystring
 ```
 
-#### Simple method
+### Simple method
 - Without ssl or tls
 ```sh
 proxen red <source port> <dest>
@@ -217,12 +225,12 @@ proxen red <source port> <dest>
 proxen red <source port> <dest> <cert file path> <key file path>
 ```
 
-#### With config file
+### With config file
  *Not yet implemented*
  Will be available in version 3.1.5
  Expected release date: *May 5 2022*
 
-### proxen as a proxy
+## proxen as a proxy
 This feature will allow you to access any resource on the web, using your server as a proxy
 
 *Not yet implemented.*
@@ -230,7 +238,7 @@ Will be available in version 3.2.0
 Expected release date: *May 30 2022*
 
 
-### proxen as a download server
+## proxen as a download server
 This feature will allow you to download any resource on your server, until you are ready to download it on your local machine. It can be very useful when the resource will not remain available for a long time, but you can't immediately download it because of a poor internet connection, or lack of disk space on your local machine
 
 *Not yet implemented.*
@@ -238,7 +246,7 @@ Will be available in version 3.3.0
 Expected release date: *June 30 2022*
 
 
-### proxen as a static file server
+## proxen as a static file server
 This feature will allow you to statically serve files from any directory
 
 *Not yet implemented.*
@@ -246,7 +254,7 @@ Will be available in version 4.0.0
 Expected release date: *September 15 2022*
 
 
-### proxen as an in-browser file explorer
+## proxen as an in-browser file explorer
 This feature will allow you to serve an in-browser file explorer on your server or your local machine. Authorized people in your network will be able to upload, download, copy, paste, etc...
 
 *Not yet implemented.*
