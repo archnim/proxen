@@ -10,10 +10,6 @@ Multifunction cli tool with **zero dependency**
 npm i -g proxen
 ```
 
-## Notice ⚠️
-**Starting from version three, proxen breaks retro-compatibility with versions 2.x.y and lower !**
-I will do all my best to never break it again.
-
 ## Usage
 There are two ways to use proxen:
 - The simple way is to type `proxen <subcommand> <params>`. Each subcommand corresponds to one feature of the program.
@@ -177,19 +173,61 @@ Add the field "rprox" to the root object of the file.
 
 
 ### proxen as a redirection server
-This feature will allow you to explicitly redirect clients to another port or server
+This feature allows you to explicitly redirect clients from a source port to another port or url. The redirection is performed through a "301" HTTP response code. The source port must be free, so that proxen can listen on it. You can also provide paths to a cert and a key file, to make the connection secure.
 
-*Not yet implemented.*
-Will be available in version 3.1.0
-Expect release date: *April 25 2022*
+In the examples below, the destination (dest) can be:
+- A port number:
+In this case redirection preserves:
+  - the protocol
+  - the domain
+  - the path
+  - the querystring
+Only the the port changes
 
+- The string "http" (lowercase):
+In this case, the redirection preserves:
+ - the domain
+ - the path
+ - the querystring
+The protocol is set to "HTTP", and the port is set to 80.
+
+- The string "https (lowercase):
+Works like the previous case. But the protocol is set to "HTTPS", and the port to 443.
+
+- A custom url:
+This allows you to redirect requests wherever you want. If you want to use some parts of the original request in the destinations url, you can use the following variables in your url string:
+  - {protocol} -> Will be replaced by the original request's protocol
+  - {domain} -> Will be replaced by the original  domain
+  - {port} -> The original port
+  - {path} -> Original path
+  - {query} -> Original querystring
+Example:
+```sh
+proxen red 1555 https://blabla.com:{port}/custom/path{query} # Only preserves port and querystring
+```
+
+#### Simple method
+- Without ssl or tls
+```sh
+proxen red <source port> <dest>
+```
+
+- Secured HTTP
+```sh
+proxen red <source port> <dest> <cert file path> <key file path>
+```
+
+#### With config file
+ *Not yet implemented*
+ Will be available in version 3.1.5
+ Expected release date: *May 5 2022*
 
 ### proxen as a proxy
 This feature will allow you to access any resource on the web, using your server as a proxy
 
 *Not yet implemented.*
 Will be available in version 3.2.0
-Expect release date: *May 30 2022*
+Expected release date: *May 30 2022*
 
 
 ### proxen as a download server
@@ -197,7 +235,7 @@ This feature will allow you to download any resource on your server, until you a
 
 *Not yet implemented.*
 Will be available in version 3.3.0
-Expect release date: *June 30 2022*
+Expected release date: *June 30 2022*
 
 
 ### proxen as a static file server
@@ -205,7 +243,7 @@ This feature will allow you to statically serve files from any directory
 
 *Not yet implemented.*
 Will be available in version 4.0.0
-Expect release date: *September 15 2022*
+Expected release date: *September 15 2022*
 
 
 ### proxen as an in-browser file explorer
@@ -213,7 +251,7 @@ This feature will allow you to serve an in-browser file explorer on your server 
 
 *Not yet implemented.*
 Will be available in version 5.0.0
-Expect release date: *December 31 2022*
+Expected release date: *December 31 2022*
 
 
 ## You can encourage me:

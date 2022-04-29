@@ -110,7 +110,7 @@ else if(op == "red") {
     red(from, to);
 }
 else if(op == "-h" || op == "--help" || op == "help") {
-  console.log("Proxen Version 3.0.8");
+  console.log("Proxen Version 3.1.1");
   console.log("Copyright (c) 2021-2022 archnim");
   console.log("Under MIT license");
   console.log("");
@@ -146,7 +146,7 @@ else if(op == "-h" || op == "--help" || op == "help") {
   console.log("https://www.npmjs.com/package/proxen#readme");
 }
 else if(op == '-v' || op == "--version" || op == "version") {
-  console.log("Proxen Version 3.0.8");
+  console.log("Proxen Version 3.1.1");
   console.log("Copyright (c) 2021-2022 archnim (https://github.com/archnim)");
   console.log("Under MIT license");
 }
